@@ -8,16 +8,16 @@ module Api::V1::Auth
         token = JWT.encode(params[:email], 'HS256')
         update_token(check_email, token)
       else
-        render json: { data: 'email or password invalid!' }, status: 401
+        render json: { message: 'email or password invalid!' }, status: 401
       end
     end
 
     private
     def update_token(user, token)
       if user.update(token: token)
-        render json: { data: 'success!', token: token, email: user.email }
+        render json: { message: 'success!', data: { token: token, email: user.email } }
       else
-        render json: { data: 'error, please try again' }, status: 500
+        render json: { message: 'error, please try again' }, status: 500
       end
     end
   end
