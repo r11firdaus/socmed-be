@@ -1,6 +1,6 @@
 module Api::V1
   class PostsController < ApplicationController
-    before_action :set_post, only: %i[ show edit update destroy ]
+    before_action :set_post, only: %i[ show update destroy ]
   
     # GET /posts/1 or /posts/1.json
     def show
@@ -49,6 +49,11 @@ module Api::V1
       else
         render json: { message: 'unauthorized' }, status: 401
       end
+    end
+
+    def user_posts
+      posts = Post.where(user_id: params[:user_id])
+      render json: { message: 'success', data: posts }
     end
   
     private
