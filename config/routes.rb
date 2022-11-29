@@ -5,6 +5,8 @@ Rails.application.routes.draw do
         resources :login
         resources :signup
       end
+      resources :posts
+      get '/user_posts', to: 'posts#user_posts'
     end
   end
 end
