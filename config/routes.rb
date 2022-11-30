@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :messages
   namespace :api do
     namespace :v1 do
       namespace :auth do
@@ -7,6 +8,7 @@ Rails.application.routes.draw do
       end
       resources :posts
       get '/user_posts', to: 'posts#user_posts'
+      resources :chats
     end
   end
 end
