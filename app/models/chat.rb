@@ -4,6 +4,7 @@ class Chat < ApplicationRecord
   has_many :messages, class_name: 'Message', foreign_key: 'unique_id'
   belongs_to :user, class_name: 'User', foreign_key: 'user_1_id'
   belongs_to :user, class_name: 'User', foreign_key: 'user_2_id'
+  validates :unique_id, presence: true, uniqueness: true
 
   class << self
     def all_chats(user_id)
