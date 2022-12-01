@@ -1,7 +1,5 @@
 module Api::V1::Auth
   class SignupController < ApplicationController
-    skip_before_action :verify_authenticity_token
-
     def create
       check_email = User.find_by(email: params[:email].downcase)
       if check_email
