@@ -11,6 +11,7 @@ module Api::V1
       msg = Message.new(message_params)
       if msg.save
         render json: { message: msg }
+        ActionCable.server.broadcast 'messages_channel', msg
       else
         render json: { message: 'error'}, status: :unprocessable_entity
       end
