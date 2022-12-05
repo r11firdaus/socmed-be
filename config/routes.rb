@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get '/user_posts', to: 'posts#user_posts'
       resources :chats
       resources :messages
+      resources :comments
     end
   end
 end
