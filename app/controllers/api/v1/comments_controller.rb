@@ -1,12 +1,16 @@
 module Api::V1
   class CommentsController < ApplicationController
-    before_action :set_comment, only: %i[ edit update destroy ]
+    before_action :set_comment, only: %i[ show edit update destroy ]
   
-    # GET /comments/1 or /comments/1.json
-    def show
-      comments = Comment.find_by(post_id: params[:id])
-
+    # GET /comments/ or /comments/.json
+    def index
+      comments = Comment.joins(:user).select("comments.*, users.email").where(post_id: params[:post_id]).order("id ASC")
       render json: { data: comments }
+    end
+
+    # GET /comments/1 or /comments/1.json
+    def show 
+      render json: { data: @comment }
     end
 
     # GET /comments/1/edit
@@ -19,7 +23,7 @@ module Api::V1
         comment = Comment.new(comment_params)
   
         if comment.save
-          render json: { message: 'success', data: comment}
+          render json: { message: 'success', data: comment }
         else
           render json: { message: commentx.errors }, status: :unprocessable_entity  
         end
