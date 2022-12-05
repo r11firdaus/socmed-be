@@ -18,14 +18,16 @@ module Api::V1
     end
   
     # POST /comments or /comments.json
-    def create  
+    def create
       if check_user(params[:user_id])
         comment = Comment.new(comment_params)
   
         if comment.save
           render json: { message: 'success', data: comment }
+          user = User.find(params[:user_id])
+          ActionCable.server.broadcast 'comment_channel', {comment: comment, email: user.email}
         else
-          render json: { message: commentx.errors }, status: :unprocessable_entity  
+          render json: { message: comment.errors }, status: :unprocessable_entity  
         end
       else
         render json: { message: 'unauthorized' }, status: 401
