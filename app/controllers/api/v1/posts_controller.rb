@@ -1,6 +1,16 @@
 module Api::V1
   class PostsController < ApplicationController
     before_action :set_post, only: %i[ show update destroy ]
+
+    # GET /posts/ or /posts/.json
+    def index
+      if params[:user_id].present?
+        posts = Post.all.joins(:user).select("posts.*, users.email").where("posts.user_id != #{params[:user_id]}")
+      else
+        posts = Post.all.joins(:user).select("posts.*, users.email")
+      end
+      render json: { message: 'success', data: posts }
+    end
   
     # GET /posts/1 or /posts/1.json
     def show
@@ -59,7 +69,7 @@ module Api::V1
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_post
-        @post = Post.find(params[:id])
+        @post = Post.joins(:user).select("posts.*, users.email").find(params[:id])
       end
   
       # Only allow a list of trusted parameters through.
