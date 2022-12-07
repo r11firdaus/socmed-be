@@ -15,9 +15,11 @@ module Api::V1
   
     # GET /chats/1 or /chats/1.json
     def show
-      if check_user(params[:user_id])
-        chats = Message.direct_chats(params[:user_id], params[:id])
-        render json: { message: (chats ? chats : chats.errors) }
+      split_user_id = params[:id].split("+")
+      if split_user_id.length == 2
+        chats = Message.direct_chats(split_user_id[0], split_user_id[1])
+        unique_id = chats.length > 0 ? chats.first.unique_id : params[:id]
+        render json: { unique_id: unique_id, data: (chats ? chats : chats.errors) }
       else
         render json: { message: 'unauthorized' }, status: 401
       end

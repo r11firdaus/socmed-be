@@ -11,7 +11,7 @@ module Api::V1
       msg = Message.new(message_params)
       if msg.save
         opponent = msg.unique_id.split("+").select { |x| x != msg.user_id.to_s }.first
-        render json: { message: msg }
+        render json: { data: msg }
         ActionCable.server.broadcast "chat_channel_for_#{opponent}", msg
       else
         render json: { message: 'error'}, status: :unprocessable_entity
