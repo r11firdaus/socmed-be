@@ -1,11 +1,11 @@
 module Api::V1
   class MessagesController < ApplicationController
-    before_action :set_message, only: %i[ show edit update destroy ]
+    before_action :set_message, only: %i[ edit update destroy ]
 
     def index
       if check_user(params[:user_id])
         chats = Message.all_chats(params[:user_id])
-        newChats = chats.slice_when { |a, b| a[:unique_id] != b[:unique_id] }
+        newChats = chats.group_by{ |x| x[:unique_id] }.values
         render json: { data: (chats ? newChats : chats.errors) }
       else
         render json: { message: 'unauthorized' }, status: 401
