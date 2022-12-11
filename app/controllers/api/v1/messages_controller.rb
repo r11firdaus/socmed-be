@@ -5,7 +5,8 @@ module Api::V1
     def index
       if check_user(params[:user_id])
         chats = Message.all_chats(params[:user_id])
-        newChats = chats.group_by{ |x| x[:unique_id] }.values
+        # newChats = chats.group_by{ |x| x[:unique_id] }.values
+        newChats = chats.group_by{ |x| x[:unique_id] }
         render json: { data: (chats ? newChats : chats.errors) }
       else
         render json: { message: 'unauthorized' }, status: 401
@@ -26,12 +27,11 @@ module Api::V1
   
     # POST /messages or /messages.json
     def create
-      msg = Message.new(message_params)
-      if msg.save
-        render json: { data: msg }
-        ActionCable.server.broadcast "chat_channel_for_#{msg.receiver_id}", msg
+      msg = Message.direct_message(message_params)
+      if msg
+        render json: { data: msg.first }
+        ActionCable.server.broadcast "chat_channel_for_#{msg.first[:opponent]}", { data: msg.first }
         # opponent = msg.unique_id.split("+").select { |x| x != msg.user_id.to_s }.first
-        # ActionCable.server.broadcast "chat_channel_for_#{opponent}", msg
       else
         render json: { message: 'error'}, status: :unprocessable_entity
       end

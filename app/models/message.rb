@@ -17,5 +17,27 @@ class Message < ApplicationRecord
       .or(Message.where(receiver_id: user_id))
       .order('messages.id DESC')
     end
+
+    def direct_message(params)
+      query = "with inserted_messages as (
+              insert into messages (unique_id, user_id, receiver_id, content, created_at, updated_at) 
+              values ('#{params[:unique_id]}', #{params[:user_id]}, #{params[:receiver_id]}, '#{params[:content]}', '#{Time.now}', '#{Time.now}') returning *) 
+              select inserted_messages.*,
+              (CASE
+              WHEN inserted_messages.user_id=#{params[:user_id]} THEN (SELECT users.email from users WHERE inserted_messages.receiver_id=users.id)
+              ELSE (SELECT users.email FROM users WHERE inserted_messages.user_id=users.id)
+              END) as opponent
+              from inserted_messages
+              left join users on inserted_messages.user_id = users.id;"
+
+      ActiveRecord::Base.connection.execute(query)
+    end
   end
 end
+
+
+# ,
+#               (CASE
+#               WHEN inserted_messages.user_id=#{params[:user_id]} THEN (SELECT users.email from users WHERE inserted_messages.receiver_id=users.id)
+#               ELSE (SELECT users.email FROM users WHERE inserted_messages.user_id=users.id)
+#               END) as opponent
