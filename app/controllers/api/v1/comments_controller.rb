@@ -24,7 +24,7 @@ module Api::V1
   
         if comment
           render json: { message: 'success', data: comment.first }
-          ActionCable.server.broadcast 'comment_channel', {comment: comment.first}
+          ActionCable.server.broadcast 'comment_channel', {data: comment.first}
         else
           render json: { message: comment.errors }, status: :unprocessable_entity  
         end

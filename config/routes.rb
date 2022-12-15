@@ -9,7 +9,6 @@ Rails.application.routes.draw do
       end
       resources :posts
       get '/user_posts', to: 'posts#user_posts'
-      resources :chats
       resources :messages
       resources :comments
     end
