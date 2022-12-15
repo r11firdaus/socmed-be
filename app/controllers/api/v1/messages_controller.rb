@@ -4,10 +4,15 @@ module Api::V1
 
     def index
       if check_user(params[:user_id])
+        arrayChats = []
         chats = Message.all_chats(params[:user_id]).group_by{ |x| x[:unique_id] }
-        # newChats = chats.group_by{ |x| x[:unique_id] }.values
-        # newChats = chats.group_by{ |x| x[:unique_id] }
-        render json: { data: (chats ? chats : chats.errors) }
+
+        chats.each do |key, val|
+          arrayChats.push({ "#{key}": val })
+        end
+        
+        # newChats = chats.group_by{ |x| x[:unique_id] }.values}
+        render json: { data: (chats ? arrayChats : chats.errors) }
       else
         render json: { message: 'unauthorized' }, status: 401
       end
