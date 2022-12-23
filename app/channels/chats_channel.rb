@@ -6,5 +6,6 @@ class ChatsChannel < ApplicationCable::Channel
 
   def unsubscribed
     # stop_all_streams
+    stop_stream_from "chat_channel_for_#{params[:user_id]}"
   end
 end
