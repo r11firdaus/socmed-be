@@ -4,8 +4,8 @@ module Api::V1
 
     # GET /posts/ or /posts/.json
     def index
-      post_params.merge!(page: params[:page])
-      posts = Post.get_posts(post_params)
+      new_params = post_params.merge!(page: params[:page])
+      posts = Post.get_posts(new_params)
       render json: { message: 'success', data: posts }
     end
   
