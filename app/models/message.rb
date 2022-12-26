@@ -1,6 +1,7 @@
 class Message < ApplicationRecord
-  belongs_to :user
-  validates :receiver_id, presence: :true
+  # belongs_to :user
+  belongs_to :user, class_name: 'User', foreign_key: 'receiver_id'
+  belongs_to :user, class_name: 'User', foreign_key: 'user_id'
 
   class << self
     def direct_chats(user_1_id, user_2_id)

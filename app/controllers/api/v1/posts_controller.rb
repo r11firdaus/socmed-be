@@ -4,11 +4,8 @@ module Api::V1
 
     # GET /posts/ or /posts/.json
     def index
-      if params[:user_id].present?
-        posts = Post.all.joins(:user).select("posts.*, users.email").where("posts.user_id != #{params[:user_id]}")
-      else
-        posts = Post.all.joins(:user).select("posts.*, users.email")
-      end
+      new_params = post_params.merge!(page: params[:page])
+      posts = Post.get_posts(new_params)
       render json: { message: 'success', data: posts }
     end
   
@@ -77,7 +74,7 @@ module Api::V1
         {
           content: params[:content],
           img_url: params[:img_url], 
-          user_id: params[:user_id]
+          user_id: params[:user_id],
         }
       end
   end

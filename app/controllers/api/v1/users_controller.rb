@@ -1,5 +1,5 @@
 module Api::V1
-  class UserController < ApplicationController
+  class UsersController < ApplicationController
     def show      
       if @user.present?
         data = { email: @user[:email], id: @user[:id] }
