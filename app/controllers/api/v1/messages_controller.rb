@@ -1,6 +1,6 @@
 module Api::V1
   class MessagesController < ApplicationController
-    before_action :set_message, only: %i[ edit update destroy ]
+    before_action :set_message, only: %i[ edit destroy ]
 
     def index
       if check_user(params[:user_id])
@@ -48,14 +48,19 @@ module Api::V1
   
     # PATCH/PUT /messages/1 or /messages/1.json
     def update
-      respond_to do |format|
-        if @message.update(message_params)
-          format.html { redirect_to message_url(@message), notice: "Message was successfully updated." }
-          format.json { render :show, status: :ok, location: @message }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @message.errors, status: :unprocessable_entity }
-        end
+      update_params = {
+        unique_id: params[:id],
+        receiver_id: params[:receiver_id],
+        status: 3,
+      }
+
+      msg = Message.read_messages(update_params)
+      if msg
+        opponent = params[:id].split("+").select { |x| x != params[:receiver_id].to_s }.first
+        ActionCable.server.broadcast "chat_channel_for_#{opponent}", { data: { unique_id: params[:id] }, type: 'update' }
+        render json: { data: 'readed!' }
+      else
+        render json: { message: 'error'}, status: :unprocessable_entity
       end
     end
   
