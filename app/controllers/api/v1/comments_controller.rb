@@ -24,7 +24,8 @@ module Api::V1
   
         if comment
           render json: { message: 'success', data: comment.first }
-          ActionCable.server.broadcast 'comment_channel', {data: comment.first}
+          ActionCable.server.broadcast "comment_channel_for_#{comment.first["post_id"]}", {data: comment.first}
+          # cari cara save single/double quotes to save in sql
         else
           render json: { message: comment.errors }, status: :unprocessable_entity  
         end

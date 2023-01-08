@@ -36,7 +36,7 @@ module Api::V1
       if check_user(params[:user_id])
         if msg
           render json: { data: msg }
-          ActionCable.server.broadcast "chat_channel_for_#{msg["receiver_id"]}", { data: msg, sender: @user.email }
+          ActionCable.server.broadcast "chat_channel_for_#{msg["receiver_id"]}", { data: msg, sender: @current_user.email }
           # opponent = msg.unique_id.split("+").select { |x| x != msg.user_id.to_s }.first
         else
           render json: { message: 'error'}, status: :unprocessable_entity
