@@ -33,12 +33,10 @@ class Message < ApplicationRecord
 
       ActiveRecord::Base.connection.execute(query)
     end
+
+    def read_messages(params)
+      Message.where(unique_id: params[:unique_id], receiver_id: params[:receiver_id])
+      .update_all(status: params[:status])
+    end
   end
 end
-
-
-# ,
-#               (CASE
-#               WHEN inserted_messages.user_id=#{params[:user_id]} THEN (SELECT users.email from users WHERE inserted_messages.receiver_id=users.id)
-#               ELSE (SELECT users.email FROM users WHERE inserted_messages.user_id=users.id)
-#               END) as opponent
