@@ -81,6 +81,7 @@ test:
 #
 production:
   <<: *default
-  database: socmed_be_production
-  username: socmed_be
-  password: <%= ENV['SOCMED_BE_DATABASE_PASSWORD'] %>
+  database: argnnwvk
+  username: argnnwvk
+  password: 5snfS69VpIUvhEx6PIQmvCG2hB0e3mdb
+  url: postgres://argnnwvk:5snfS69VpIUvhEx6PIQmvCG2hB0e3mdb@batyr.db.elephantsql.com/argnnwvk
