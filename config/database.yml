@@ -57,7 +57,10 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: socmed_be_test
+  database: argnnwvk
+  username: argnnwvk
+  password: 5snfS69VpIUvhEx6PIQmvCG2hB0e3mdb
+  url: postgres://argnnwvk:5snfS69VpIUvhEx6PIQmvCG2hB0e3mdb@batyr.db.elephantsql.com/argnnwvk
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
