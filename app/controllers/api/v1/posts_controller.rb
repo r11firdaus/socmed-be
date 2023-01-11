@@ -59,7 +59,7 @@ module Api::V1
     end
 
     def user_posts
-      posts = Post.where(user_id: params[:user_id])
+      posts = Post.joins(:user).select('posts.*, users.email').where(user_id: params[:user_id])
       render json: { message: 'success', data: posts }
     end
   

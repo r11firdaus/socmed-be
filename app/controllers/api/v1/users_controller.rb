@@ -1,6 +1,7 @@
 module Api::V1
   class UsersController < ApplicationController
     before_action :set_user, only: %i[ show ]
+    
     def show      
       if @user.present?
         data = { email: @user[:email], id: @user[:id] }
@@ -12,7 +13,11 @@ module Api::V1
 
     private
     def set_user
-      @user = User.find(params[:id])
+      if params[:email].present?
+        @user = User.find_by_email(params[:email])
+      else
+        @user = User.find(params[:id])
+      end      
     end
   end
 end
