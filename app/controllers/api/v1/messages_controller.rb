@@ -1,5 +1,7 @@
 module Api::V1
   class MessagesController < ApplicationController
+    require 'cgi'
+    
     before_action :set_message, only: %i[ edit destroy ]
 
     def index
@@ -20,10 +22,11 @@ module Api::V1
   
     # GET /messages/1 or /messages/1.json
     def show
-      split_user_id = params[:id].split("+")
+      unique_id_decoded = CGI.unescape(params[:id])
+      split_user_id = unique_id_decoded.split("+")
       if split_user_id.length == 2
         chats = Message.direct_chats(split_user_id[0], split_user_id[1])
-        unique_id = chats.length > 0 ? chats.first.unique_id : params[:id]
+        unique_id = chats.length > 0 ? chats.first.unique_id : unique_id_decoded
         render json: { unique_id: unique_id, data: (chats ? chats : chats.errors) }
       else
         render json: { message: 'unauthorized' }, status: 401
@@ -82,7 +85,12 @@ module Api::V1
   
       # Only allow a list of trusted parameters through.
       def message_params
-        params.require(:message).permit(:user_id, :unique_id, :content, :receiver_id)
+        {
+          user_id: params[:user_id],
+          unique_id: CGI.unescape(params[:unique_id]),
+          content: params[:content],
+          receiver_id: params[:receiver_id]
+        }
       end
   end
 end
