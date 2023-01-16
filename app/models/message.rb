@@ -5,7 +5,7 @@ class Message < ApplicationRecord
 
   class << self
     def direct_chats(user_1_id, user_2_id)
-      Message.where("unique_id = '#{user_1_id}+#{user_2_id}' OR unique_id = '#{user_2_id}+#{user_1_id}'")
+      Message.where("unique_id = '#{user_1_id}_#{user_2_id}' OR unique_id = '#{user_2_id}_#{user_1_id}'")
     end
     
     def all_chats(user_id)

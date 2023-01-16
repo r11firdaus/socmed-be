@@ -1,7 +1,5 @@
 module Api::V1
   class MessagesController < ApplicationController
-    require 'cgi'
-    
     before_action :set_message, only: %i[ edit destroy ]
 
     def index
@@ -23,7 +21,7 @@ module Api::V1
     # GET /messages/1 or /messages/1.json
     def show
       unique_id_decoded = CGI.unescape(params[:id])
-      split_user_id = unique_id_decoded.split("+")
+      split_user_id = unique_id_decoded.split("_")
       if split_user_id.length == 2
         chats = Message.direct_chats(split_user_id[0], split_user_id[1])
         unique_id = chats.length > 0 ? chats.first.unique_id : unique_id_decoded
@@ -59,7 +57,7 @@ module Api::V1
 
       msg = Message.read_messages(update_params)
       if msg
-        opponent = params[:id].split("+").select { |x| x != params[:receiver_id].to_s }.first
+        opponent = params[:id].split("_").select { |x| x != params[:receiver_id].to_s }.first
         ActionCable.server.broadcast "chat_channel_for_#{opponent}", { data: { unique_id: params[:id] }, type: 'update' }
         render json: { data: 'readed!' }
       else
@@ -87,7 +85,7 @@ module Api::V1
       def message_params
         {
           user_id: params[:user_id],
-          unique_id: CGI.unescape(params[:unique_id]),
+          unique_id: params[:unique_id],
           content: params[:content],
           receiver_id: params[:receiver_id]
         }
