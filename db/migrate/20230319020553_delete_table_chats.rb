@@ -1,4 +1,4 @@
-class DropChatsTable < ActiveRecord::Migration[6.1]
+class DeleteTableChats < ActiveRecord::Migration[6.1]
   def up
     drop_table :chats
   end
